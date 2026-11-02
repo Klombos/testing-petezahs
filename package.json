@@ -1,0 +1,25 @@
+{
+  "name": "testing-petezahs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -k \"npm:dev:web\" \"npm:dev:server\"",
+    "dev:web": "vite",
+    "dev:server": "node --watch backend/server.js",
+    "build": "vite build",
+    "start": "NODE_ENV=production node backend/server.js",
+    "start:win": "set NODE_ENV=production&& node backend/server.js",
+    "check": "node --check backend/server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "vite": "^6.1.0"
+  }
+}

@@ -11,12 +11,14 @@
     "dev:web": "vite",
     "dev:server": "node --watch backend/server.js",
     "build": "vite build",
-    "start": "NODE_ENV=production node backend/server.js",
-    "start:win": "set NODE_ENV=production&& node backend/server.js",
+    "start": "node backend/start.js",
+    "start:win": "node backend/start.js",
     "check": "node --check backend/server.js"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",

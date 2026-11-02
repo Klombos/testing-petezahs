@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2048</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#faf8ef;color:#776e65;font-family:Arial,sans-serif;display:grid;place-items:center;min-height:100vh;padding:20px}.wrap{width:min(440px,100%)}header{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:64px;margin:0;color:#776e65}.score{background:#bbada0;color:white;padding:8px 16px;border-radius:5px;text-align:center;font-weight:bold}.score small{display:block;font-size:10px;opacity:.8}.score strong{font-size:20px}.sub{display:flex;justify-content:space-between;align-items:center;margin:15px 0}.sub p{font-weight:bold}.button{border:0;background:#8f7a66;color:white;padding:10px 14px;border-radius:5px;font-weight:bold;cursor:pointer}.board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;background:#bbada0;padding:10px;border-radius:7px;touch-action:none}.cell{aspect-ratio:1;background:#cdc1b4;border-radius:5px;display:grid;place-items:center;font-size:clamp(22px,7vw,38px);font-weight:bold;color:#776e65}.v2{background:#eee4da}.v4{background:#ede0c8}.v8{background:#f2b179;color:white}.v16{background:#f59563;color:white}.v32{background:#f67c5f;color:white}.v64{background:#f65e3b;color:white}.v128,.v256,.v512{background:#edcf72;color:white;font-size:30px}.v1024,.v2048{background:#edc53f;color:white;font-size:25px}.hint{text-align:center;color:#8f7a66;font-size:13px;line-height:1.6;margin-top:18px}
+</style>
+</head>
+<body><main class="wrap"><header><h1>2048</h1><div class="score"><small>SCORE</small><strong id="score">0</strong></div></header><div class="sub"><p>Join the numbers. Get to 2048!</p><button class="button" id="reset">New game</button></div><div class="board" id="board" aria-label="2048 game board"></div><p class="hint">Use your arrow keys or swipe to move the tiles.<br>Combine matching numbers to reach 2048.</p></main>
+<script>
+const boardEl=document.getElementById("board"),scoreEl=document.getElementById("score");let board,score;
+function empty(){return Array.from({length:4},()=>Array(4).fill(0))}
+function spawn(){const spots=[];board.forEach((r,y)=>r.forEach((v,x)=>{if(!v)spots.push([y,x])}));if(spots.length){const [y,x]=spots[Math.floor(Math.random()*spots.length)];board[y][x]=Math.random()<.9?2:4}}
+function draw(){boardEl.innerHTML="";board.flat().forEach(v=>{const el=document.createElement("div");el.className="cell"+(v?" v"+v:"");el.textContent=v||"";boardEl.append(el)});scoreEl.textContent=score}
+function reset(){board=empty();score=0;spawn();spawn();draw()}
+function move(dir){const before=JSON.stringify(board);for(let i=0;i<4;i++){let line=dir==="left"||dir==="right"?board[i].slice():board.map(r=>r[i]);if(dir==="right"||dir==="down")line.reverse();line=line.filter(Boolean);for(let j=0;j<line.length-1;j++){if(line[j]===line[j+1]){line[j]*=2;score+=line[j];line.splice(j+1,1)}}while(line.length<4)line.push(0);if(dir==="right"||dir==="down")line.reverse();if(dir==="left"||dir==="right")board[i]=line;else line.forEach((v,y)=>board[y][i]=v)}if(before!==JSON.stringify(board)){spawn();draw()}}
+document.addEventListener("keydown",e=>{const d={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"up",ArrowDown:"down"}[e.key];if(d){e.preventDefault();move(d)}});
+let sx=0,sy=0;boardEl.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});boardEl.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))>25)move(Math.abs(dx)>Math.abs(dy)?(dx>0?"right":"left"):(dy>0?"down":"up"))},{passive:true});document.getElementById("reset").onclick=reset;reset();
+</script></body></html>
